@@ -34,28 +34,28 @@ import { createStrategy, DEFAULT_PARAMS, type Params } from './strategy.ts';
  * internal-consistency checks only — they never read the market, the clock,
  * or the environment, so they cannot change the bot's decisions.
  */
-function assertSaneParams(p: Params): void {
-  const bad: string[] = [];
-  if (!(p.firstSol > 0)) bad.push('firstSol must be positive');
-  if (!(p.addSol > 0)) bad.push('addSol must be positive');
-  if (p.firstSol > p.maxStakeSol) bad.push('firstSol exceeds maxStakeSol');
-  if (p.firstSol + p.addSol > p.maxStakeSol + 1e-9) bad.push('firstSol + addSol exceeds maxStakeSol');
-  if (!(p.minRqSol < p.maxRqSol)) bad.push('minRqSol must be below maxRqSol');
-  if (!(p.minAge < p.maxAge)) bad.push('minAge must be below maxAge');
-  if (!(p.takeProfit > 0)) bad.push('takeProfit must be positive');
-  if (!(p.stopLoss > 0 && p.stopLoss < p.takeProfit)) bad.push('stopLoss must be positive and below takeProfit');
-  if (!(p.trailArm > 0 && p.trail > 0)) bad.push('trailArm and trail must be positive');
-  if (!(p.probeSol >= p.minBuySol)) bad.push('probeSol is below minBuySol, the probe would never be placed');
-  if (!(p.maxProbeSpendSol >= p.probeSol)) bad.push('maxProbeSpendSol is below one probe');
-  if (!(p.maxMain >= 1)) bad.push('maxMain must allow at least one momentum position');
-  if (!(p.targetCoins >= 20)) bad.push('targetCoins is below the 20-coin guardrail minimum');
-  if (p.maxExposureSol < p.firstSol + p.addSol - 1e-9) bad.push('maxExposureSol cannot fund one full position (firstSol + addSol)');
-  if (!(p.minRecentBuyers >= 1)) bad.push('minRecentBuyers must be at least 1');
-  if (!(p.probeCooldown >= 0)) bad.push('probeCooldown must not be negative');
-  if (!(p.paceSecs > 0)) bad.push('paceSecs must be positive');
-  if (bad.length > 0) throw new Error(`invalid strategy params: ${bad.join('; ')}`);
+function checkParamsSane(cfg: Params): void {
+  const problems: string[] = [];
+  if (!(cfg.firstSol > 0)) problems.push('firstSol must be positive');
+  if (!(cfg.addSol > 0)) problems.push('addSol must be positive');
+  if (cfg.firstSol > cfg.maxStakeSol) problems.push('firstSol exceeds maxStakeSol');
+  if (cfg.firstSol + cfg.addSol > cfg.maxStakeSol + 1e-9) problems.push('firstSol + addSol exceeds maxStakeSol');
+  if (!(cfg.minRqSol < cfg.maxRqSol)) problems.push('minRqSol must be below maxRqSol');
+  if (!(cfg.minAge < cfg.maxAge)) problems.push('minAge must be below maxAge');
+  if (!(cfg.takeProfit > 0)) problems.push('takeProfit must be positive');
+  if (!(cfg.stopLoss > 0 && cfg.stopLoss < cfg.takeProfit)) problems.push('stopLoss must be positive and below takeProfit');
+  if (!(cfg.trailArm > 0 && cfg.trail > 0)) problems.push('trailArm and trail must be positive');
+  if (!(cfg.probeSol >= cfg.minBuySol)) problems.push('probeSol is below minBuySol, the probe would never be placed');
+  if (!(cfg.maxProbeSpendSol >= cfg.probeSol)) problems.push('maxProbeSpendSol is below one probe');
+  if (!(cfg.maxMain >= 1)) problems.push('maxMain must allow at least one momentum position');
+  if (!(cfg.targetCoins >= 20)) problems.push('targetCoins is below the 20-coin guardrail minimum');
+  if (cfg.maxExposureSol < cfg.firstSol + cfg.addSol - 1e-9) problems.push('maxExposureSol cannot fund one full position (firstSol + addSol)');
+  if (!(cfg.minRecentBuyers >= 1)) problems.push('minRecentBuyers must be at least 1');
+  if (!(cfg.probeCooldown >= 0)) problems.push('probeCooldown must not be negative');
+  if (!(cfg.paceSecs > 0)) problems.push('paceSecs must be positive');
+  if (problems.length > 0) throw new Error(`invalid strategy params: ${problems.join('; ')}`);
 }
 
-assertSaneParams(DEFAULT_PARAMS);
+checkParamsSane(DEFAULT_PARAMS);
 
 await runBot(createStrategy(DEFAULT_PARAMS));
