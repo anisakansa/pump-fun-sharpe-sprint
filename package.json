@@ -1,0 +1,1 @@
+{"description":"Paper trading bot for the Pump.fun Sharpe Sprint on make.fun — steady hourly gains on a 6h pump.fun bonding-curve replay, ranked by hourly Sharpe ratio.","engines":{"node":">=22.18"},"license":"MIT","main":"main.ts","name":"pump-fun-sharpe-sprint","scripts":{"backtest":"node tools/slices.ts","start":"node main.ts"},"type":"module","version":"1.0.0"}
