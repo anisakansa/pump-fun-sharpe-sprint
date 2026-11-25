@@ -16,9 +16,12 @@
 // all came from the smaller end of that bucket, and winners peaked and then
 // faded instead of running far — so this bot only buys curves with real SOL
 // 40-70 whose tape is clean (several distinct non-creator buyers, the creator
-// still holding, buys outweighing sells, the price parked near its early high,
-// fresh net inflow still positive) and banks the win at +20% instead of waiting
-// for more. Size goes to the survivors: 0.4 SOL first, one 0.2 SOL add into
+// still holding, buys outweighing sells by at least 2:1, the price parked near
+// its early high, fresh net inflow still positive) and banks the win at +15%
+// instead of waiting for more. The sell-ratio bound is 0.50 by measurement:
+// 0.35 admits two fewer winning coins and leaves the top-3 share of gains at
+// 52.1% (over the 50% concentration bar), while 0.60 admits a slice-4 rug
+// (-0.27 SOL in that slice). Size goes to the survivors: 0.4 SOL first, one 0.2 SOL add into
 // strength, at most 0.6 SOL per coin and four momentum positions at once.
 //
 // Exits do the real work: take profit, stop loss, a trailing exit once the peak
@@ -137,7 +140,7 @@ export const DEFAULT_PARAMS: Params = {
   minBuys: 4,
   minRecentBuyers: 2,
   maxDevBuySol: 3,
-  maxSellRatio: 0.35,
+  maxSellRatio: 0.5,
   minRunup: 0.98,
   maxRunup: 10,
   nearHigh: 0.9,

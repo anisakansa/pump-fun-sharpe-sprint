@@ -10,7 +10,7 @@ Paper trading bot for the [Pump.fun Sharpe Sprint — Cleanest Paper Bot Wins](h
 
 The final window is only 6 hours long, so only six hourly equity marks decide the rank: Sharpe = mean(hourly return) / sample stdev(hourly return). A single lumpy moonshot scores about 0.41 at best, while small gains banked steadily every hour score much higher. This bot is therefore built for steady hourly marks, not for the biggest PnL: it buys only large, mature curves whose launch tape is still clean, banks the win early (+15% take-profit), cuts losers fast (−5% stop), and never lets a position sit long enough to mark a whole hour down.
 
-Buy mature, large bonding curves only (real SOL 40–70) after a clean tape: several distinct non-creator buyers, no creator sell, buys outweighing sells, price near its early high, fresh net inflow positive — and the recent flow must come from more than one buyer, so a single wallet washing the tape does not count as demand. The dev-window data says small young curves bleed on average while large survivors grind up toward completion, so size goes to the survivors: up to 0.6 SOL per coin, one add into strength, at most four momentum positions at once, no shorts, no leverage.
+Buy mature, large bonding curves only (real SOL 40–70) after a clean tape: several distinct non-creator buyers, no creator sell, buys outweighing sells by at least 2:1, price near its early high, fresh net inflow positive — and the recent flow must come from more than one buyer, so a single wallet washing the tape does not count as demand. The dev-window data says small young curves bleed on average while large survivors grind up toward completion, so size goes to the survivors: up to 0.6 SOL per coin, one add into strength, at most four momentum positions at once, no shorts, no leverage.
 
 Exits are disciplined: take profit +15%, stop loss −5%, trailing stop once the peak clears +10%, immediate exit on creator sell or a single large sell, fade exit when net flow over the last 75 slots turns negative, hard time limit. Positions may ride into completion (closed by the replay at final reserves). Tiny 0.01 SOL probe round trips keep the guardrail bar (≥20 coins) covered when the main signal is quiet; the probe pace ramps over 6 hours of block time so the guardrail is met inside the 6-hour final window, with a 30-coin target for margin against failed probe fills.
 
@@ -24,13 +24,13 @@ The dev dataset is byte-identical to the Pump Replay v1 dataset (24h, 2–3 Nov 
 |---|---|---|---|---|---|
 | Slice 1 (0–6h) | −0.026 SOL | −2.50 | 0.26% | 30 | 31 |
 | Slice 2 (6–12h) | +0.185 SOL | +0.55 | 0.71% | 30 | 32 |
-| Slice 3 (12–18h) | +0.105 SOL | +0.34 | 0.19% | 30 | 31 |
-| Slice 4 (18–24h) | +0.138 SOL | +0.34 | 0.47% | 30 | 31 |
-| Full 24h | **+0.513 SOL** | **+0.38** | 0.71% | 39 | 41 |
+| Slice 3 (12–18h) | +0.204 SOL | +0.53 | 0.40% | 30 | 31 |
+| Slice 4 (18–24h) | +0.070 SOL | +0.18 | 1.21% | 30 | 33 |
+| Full 24h | **+0.548 SOL** | **+0.39** | 0.91% | 42 | 46 |
 
-Slice 1 is the quiet early-morning slice (03:09–09:09 UTC): no curve qualifies for a main entry there, so the slice is probe drag only. Slices 2–4 — the realistic proxy for the 17:00–23:00 UTC final window — are Sharpe-positive with 2–4 main entries each. All house pilots are Sharpe-negative on the full dev window (sniper −0.84, reversion −0.48, momentum −0.58).
+Slice 1 is the quiet early-morning slice (03:09–09:09 UTC): no curve qualifies for a main entry there, so the slice is probe drag only. Slices 2–4 — the realistic proxy for the 17:00–23:00 UTC final window — are Sharpe-positive with 4–7 main entries each. All house pilots are Sharpe-negative on the full dev window (sniper −0.84, reversion −0.48, momentum −0.58).
 
-Tuning notes (all measured on the same slices): TP +20% gives more PnL (+0.60 SOL) but a slightly lower Sharpe and worse concentration; TP +15% is the best Sharpe/concentration trade-off. Loosening the entry filter (real SOL ≥ 30, or a looser tape) admits rugs and destroys the run — the strict tape filter is doing the work. A half-position partial take-profit at +8% was tried and rejected by measurement (lower PnL, worse concentration).
+Tuning notes (all measured on the same slices): TP +20% gives more PnL (+0.60 SOL) but a slightly lower Sharpe and worse concentration; TP +15% is the best Sharpe/concentration trade-off. Loosening the entry filter (real SOL ≥ 30, or a looser tape) admits rugs and destroys the run — the strict tape filter is doing the work. A half-position partial take-profit at +8% was tried and rejected by measurement (lower PnL, worse concentration). The sell-ratio bound (sell SOL ≤ 50% of buy SOL) is the concentration fix: at 0.35 the top-3 share of full-dev gains is 52.1% (over the 50% bar); at 0.50 two more coins win and the share drops to 47.5% with full PnL +0.548 SOL; at 0.60 a slice-4 rug breaks two slices. Smaller sizing (0.3 SOL first buy, 6 positions) passes the same gates but earns less (+0.404 SOL), so the 0.4 SOL sizing stays.
 
 ## Run
 
